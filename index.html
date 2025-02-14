@@ -39,7 +39,7 @@
             var enteredCode = document.getElementById('accessCode').value;
             if (enteredCode === '1924') {
                 var newWindow = window.open('about:blank', '_blank');
-                fetch('windex.html')
+                fetch('windex.html?' + new Date().getTime())
                     .then(response => response.text())
                     .then(data => {
                         newWindow.document.write(data);
