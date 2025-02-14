@@ -32,13 +32,14 @@
 <body>
     <h1>Virk Studio's Education Gate (Enter Access Code For Tutors)</h1>
     <input type="text" id="accessCode" placeholder="Enter code.">
-    <button onclick="checkCode()">Submit</button>
+    <button onclick="openPage()">Submit</button>
 
     <script>
-        function checkCode() {
+        function openPage() {
             var enteredCode = document.getElementById('accessCode').value;
             if (enteredCode === '1924') {
-                window.location.href = '/ganbu';
+                var newWindow = window.open('about:blank', '_blank');
+                newWindow.location.href = 'windex.html';
             } else {
                 alert('Invalid code. Please try again.');
             }
