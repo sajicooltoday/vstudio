@@ -39,7 +39,18 @@
             var enteredCode = document.getElementById('accessCode').value;
             if (enteredCode === '1924') {
                 var newWindow = window.open('about:blank', '_blank');
-                newWindow.location.href = 'windex.html';
+                fetch('windex.html')
+                    .then(response => response.text())
+                    .then(data => {
+                        newWindow.document.write(data);
+                        newWindow.document.close();
+                        window.close();
+                    })
+                    .catch(error => {
+                        console.error('Error loading the HTML file:', error);
+                        newWindow.document.write('<h1>Error loading the requested page.</h1>');
+                        newWindow.document.close();
+                    });
             } else {
                 alert('Invalid code. Please try again.');
             }
