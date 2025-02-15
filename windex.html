@@ -5,26 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <link rel="stylesheet" href="pico.indigo.min.css">
-    <title></title>
+    <title>Games Website</title>
     <style>
       @font-face {
-            font-family: 'Coolvetica';
-            src: url('Coolvetica.otf') format('opentype');
+        font-family: 'Coolvetica';
+        src: url('Coolvetica.otf') format('opentype');
       }
 
       p {
         padding-top: 30px;
         font-family: "Coolvetica";
       }
-      
+
       body {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         margin: 0;
+        background-color: #121212;
       }
-      
+
       main {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(512px, 1fr));
@@ -54,20 +55,153 @@
         object-fit: fill;
         border-radius: 25%;
       }
+
+      .game-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .game-content {
+        position: relative;
+        width: 80%;
+        height: 80%;
+      }
+
+      .game-controls {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        gap: 10px;
+      }
+
+      button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .hidden {
+        display: none;
+      }
+
     </style>
   </head>
   <body>
     <main class="container">
-      <div class="section">
-        <img src="https://play-lh.googleusercontent.com/xbB3QLgeuMh5clpSpMLRAPJ80WV77jifWu1iz-quwQwN7kp5WCzvrLiM-Up6au20OTI" alt="Img">
+      <div class="section" id="game1">
+        <img src="https://play-lh.googleusercontent.com/xbB3QLgeuMh5clpSpMLRAPJ80WV77jifWu1iz-quwQwN7kp5WCzvrLiM-Up6au20OTI" alt="Getaway Shootout">
         <p>Getaway Shootout</p>
-        <button>Play</button>
+        <button onclick="playGame('game1')">Play</button>
       </div>
-        <div class="section">
-        <img src="https://fngames.io/data/image/game/slope-unblocked-1.jpg" alt="Img">
+      <div class="section" id="game2">
+        <img src="https://fngames.io/data/image/game/slope-unblocked-1.jpg" alt="Slope">
         <p>Slope</p>
-        <button>Play</button>
+        <button onclick="playGame('game2')">Play</button>
       </div>
     </main>
+
+    <div class="game-container" id="gameContainer">
+      <div class="game-content">
+        <div class="game-controls">
+          <button onclick="exitGame()">Return</button>
+          <button onclick="toggleFullscreen()">Fullscreen</button>
+        </div>
+        <div id="gameCanvasContainer"></div>
+      </div>
+    </div>
+
+    <script src="path/to/UnityLoader.js"></script>
+    <script>
+      let currentGameId = null;
+
+      function detectUnityFiles(gameId) {
+        const gameFolder = `assets/${gameId}`;
+        
+        const unityFiles = [
+          `${gameFolder}/${gameId}.json`,
+          `${gameFolder}/${gameId}.data.unityweb`,
+          `${gameFolder}/${gameId}.wasm.code.unityweb`,
+          `${gameFolder}/${gameId}.wasm.framework.unityweb`
+        ];
+
+        return unityFiles.every(file => fileExists(file));
+      }
+
+      function fileExists(filePath) {
+        const request = new XMLHttpRequest();
+        request.open('GET', filePath, false);
+        request.send();
+        return request.status === 200;
+      }
+
+      function loadUnityGame(gameId) {
+        const container = document.getElementById('gameCanvasContainer');
+        container.innerHTML = '';
+
+        if (gameId === 'game1') {
+          UnityLoader.instantiate("gameCanvasContainer", "assets/game1/GetawayShootoutPoki.json", {
+            onProgress: function (gameInstance, progress) {
+            }
+          });
+        }
+      }
+
+      function loadWasmGame(gameId) {
+        const container = document.getElementById('gameCanvasContainer');
+        container.innerHTML = '';
+        const wasmScript = document.createElement('script');
+        wasmScript.src = `assets/${gameId}/game.wasm.js`;
+        container.appendChild(wasmScript);
+      }
+
+      function playGame(gameId) {
+        const gameContainer = document.getElementById('gameContainer');
+        currentGameId = gameId;
+
+        if (detectUnityFiles(gameId)) {
+          loadUnityGame(gameId);
+        } else {
+          loadWasmGame(gameId);
+        }
+
+        gameContainer.style.display = 'flex';
+      }
+
+      function exitGame() {
+        const gameContainer = document.getElementById('gameContainer');
+        const gameCanvasContainer = document.getElementById('gameCanvasContainer');
+        gameCanvasContainer.innerHTML = '';
+        gameContainer.style.display = 'none';
+      }
+
+      function toggleFullscreen() {
+        const gameCanvasContainer = document.getElementById('gameCanvasContainer');
+        if (gameCanvasContainer.requestFullscreen) {
+          gameCanvasContainer.requestFullscreen();
+        } else if (gameCanvasContainer.mozRequestFullScreen) {
+          gameCanvasContainer.mozRequestFullScreen();
+        } else if (gameCanvasContainer.webkitRequestFullscreen) {
+          gameCanvasContainer.webkitRequestFullscreen();
+        } else if (gameCanvasContainer.msRequestFullscreen) {
+          gameCanvasContainer.msRequestFullscreen();
+        }
+      }
+    </script>
   </body>
 </html>
