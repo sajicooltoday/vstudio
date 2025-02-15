@@ -96,10 +96,16 @@
         background-color: #45a049;
       }
 
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 15px;
+      }
+
       .hidden {
         display: none;
       }
-
     </style>
   </head>
   <body>
@@ -107,12 +113,12 @@
       <div class="section" id="game1">
         <img src="https://play-lh.googleusercontent.com/xbB3QLgeuMh5clpSpMLRAPJ80WV77jifWu1iz-quwQwN7kp5WCzvrLiM-Up6au20OTI" alt="Getaway Shootout">
         <p>Getaway Shootout</p>
-        <button onclick="playGame('game1')">Play</button>
+        <button onclick="playGame('game1', 'https://ubg44.github.io/GetawayShootout/')">Play</button>
       </div>
       <div class="section" id="game2">
         <img src="https://fngames.io/data/image/game/slope-unblocked-1.jpg" alt="Slope">
         <p>Slope</p>
-        <button onclick="playGame('game2')">Play</button>
+        <button onclick="playGame('game2', 'https://azgames.io/game/slope/')">Play</button>
       </div>
     </main>
 
@@ -122,84 +128,39 @@
           <button onclick="exitGame()">Return</button>
           <button onclick="toggleFullscreen()">Fullscreen</button>
         </div>
-        <div id="gameCanvasContainer"></div>
+        <iframe id="gameIframe" src="" allow="fullscreen"></iframe>
       </div>
     </div>
 
-    <script src="path/to/UnityLoader.js"></script>
     <script>
       let currentGameId = null;
 
-      function detectUnityFiles(gameId) {
-        const gameFolder = `assets/${gameId}`;
-        
-        const unityFiles = [
-          `${gameFolder}/${gameId}.json`,
-          `${gameFolder}/${gameId}.data.unityweb`,
-          `${gameFolder}/${gameId}.wasm.code.unityweb`,
-          `${gameFolder}/${gameId}.wasm.framework.unityweb`
-        ];
-
-        return unityFiles.every(file => fileExists(file));
-      }
-
-      function fileExists(filePath) {
-        const request = new XMLHttpRequest();
-        request.open('GET', filePath, false);
-        request.send();
-        return request.status === 200;
-      }
-
-      function loadUnityGame(gameId) {
-        const container = document.getElementById('gameCanvasContainer');
-        container.innerHTML = '';
-
-        if (gameId === 'game1') {
-          UnityLoader.instantiate("gameCanvasContainer", "assets/game1/GetawayShootoutPoki.json", {
-            onProgress: function (gameInstance, progress) {
-            }
-          });
-        }
-      }
-
-      function loadWasmGame(gameId) {
-        const container = document.getElementById('gameCanvasContainer');
-        container.innerHTML = '';
-        const wasmScript = document.createElement('script');
-        wasmScript.src = `assets/${gameId}/game.wasm.js`;
-        container.appendChild(wasmScript);
-      }
-
-      function playGame(gameId) {
+      function playGame(gameId, gameUrl) {
         const gameContainer = document.getElementById('gameContainer');
+        const gameIframe = document.getElementById('gameIframe');
+        gameIframe.src = gameUrl;
         currentGameId = gameId;
-
-        if (detectUnityFiles(gameId)) {
-          loadUnityGame(gameId);
-        } else {
-          loadWasmGame(gameId);
-        }
-
         gameContainer.style.display = 'flex';
       }
 
       function exitGame() {
         const gameContainer = document.getElementById('gameContainer');
-        const gameCanvasContainer = document.getElementById('gameCanvasContainer');
-        gameCanvasContainer.innerHTML = '';
+        const gameIframe = document.getElementById('gameIframe');
+        gameIframe.src = '';
         gameContainer.style.display = 'none';
       }
 
       function toggleFullscreen() {
-        const gameCanvasContainer = document.getElementById('gameCanvasContainer');
-        if (gameCanvasContainer.requestFullscreen) {
-          gameCanvasContainer.requestFullscreen();
-        } else if (gameCanvasContainer.mozRequestFullScreen) {
-          gameCanvasContainer.mozRequestFullScreen();
-        } else if (gameCanvasContainer.webkitRequestFullscreen) {
-          gameCanvasContainer.webkitRequestFullscreen();
-        } else if (gameCanvasContainer.msRequestFullscreen) {
-          gameCanvasContainer.msRequestFullscreen();
+        const gameIframe = document.getElementById('gameIframe');
+        
+        if (gameIframe.requestFullscreen) {
+          gameIframe.requestFullscreen();
+        } else if (gameIframe.mozRequestFullScreen) {
+          gameIframe.mozRequestFullScreen();
+        } else if (gameIframe.webkitRequestFullscreen) {
+          gameIframe.webkitRequestFullscreen();
+        } else if (gameIframe.msRequestFullscreen) {
+          gameIframe.msRequestFullscreen();
         }
       }
     </script>
