@@ -1,182 +1,173 @@
 <!doctype html>
 <html data-theme="dark">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="pico.indigo.min.css">
-    <title></title>
-    <style>
-      @font-face {
-        font-family: 'Coolvetica';
-        src: url('Coolvetica.otf') format('opentype');
-      }
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="pico.indigo.min.css">
+<title></title>
+<style>
+@font-face {
+font-family: 'Coolvetica';
+src: url('Coolvetica.otf') format('opentype');
+}
 
-      p {
-        padding-top: 15px;
-        font-family: "Coolvetica";
-        margin-bottom: 15px;
-      }
+p {
+        padding-top: 30px;
+font-family: "Coolvetica";
+}
 
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #121212;
-      }
+body {
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+margin: 0;
+background-color: #121212;
+}
 
-      main {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(512px, 1fr));
-        grid-gap: 20px;
-        padding: 20px;
-        width: 80%;
-        max-width: 1280px;
-        justify-items: center;
-        margin: 0 auto;
-        min-height: 100vh;
-      }
+main {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(512px, 1fr));
+grid-gap: 20px;
+padding: 20px;
+width: 80%;
+max-width: 1280px;
+overflow-y: auto;
+height: 80vh;
+justify-items: center;
+}
 
-      .section {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        width: 100%;
-        max-width: 512px;
-        min-height: 400px;
-        border-radius: 25%;
-        text-align: center;
-        background-color: #fff;
-        padding: 20px;
-        border: 1px solid #ccc;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        margin: 10px;
-      }
-
-      .section img {
-        width: 100%;
-        height: 200%;
-        object-fit: fill;
-        border-radius: 25%;
-        margin-bottom: 15px;
-      }
-
-      .game-container {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      }
-
-      .game-content {
-        position: relative;
-        width: 80%;
-        height: 80%;
-      }
-
-      .game-controls {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        display: flex;
-        gap: 10px;
-      }
-
-      button {
-        background-color: #4CAF50;
-        color: white;
+.section {
+        width: 512px;
+        height: 512px;
+border-radius: 25%;
+text-align: center;
+background-color: #fff;
         padding: 10px;
-        margin-top: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-bottom: 10px;
-      }
+border: 1px solid #ccc;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
-      button:hover {
-        background-color: #45a049;
-      }
+.section img {
+width: 100%;
+height: 100%;
+object-fit: fill;
+border-radius: 25%;
+}
 
-      iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        border-radius: 15px;
-      }
+.game-container {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(0, 0, 0, 0.7);
+display: none;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+}
 
-      .hidden {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <main class="container">
-      <div class="section" id="game1">
-        <img src="https://play-lh.googleusercontent.com/xbB3QLgeuMh5clpSpMLRAPJ80WV77jifWu1iz-quwQwN7kp5WCzvrLiM-Up6au20OTI" alt="Getaway Shootout">
-        <p>Getaway Shootout</p>
-        <button onclick="playGame('game1', 'https://ubg44.github.io/GetawayShootout/')">Play</button>
-      </div>
-      <div class="section" id="game2">
-        <img src="https://fngames.io/data/image/game/slope-unblocked-1.jpg" alt="Slope">
-        <p>Slope</p>
-        <button onclick="playGame('game2', 'https://azgames.io/game/slope/')">Play</button>
-      </div>
-      <div class="section" id="game3">
-        <img src="https://play-lh.googleusercontent.com/fLqvWSVq5rENEvu32xl0hf96wwSHVwQm-_9xc6KZg9Vgv9PbAtf1CyBYW7i1mlAXoSA" alt="Gunspin">
-        <p>Gunspin</p>
-        <button onclick="playGame('game3', 'https://gun-spin.github.io/file/')">Play</button>
-      </div>
-    </main>
+.game-content {
+position: relative;
+width: 80%;
+height: 80%;
+}
 
-    <div class="game-container" id="gameContainer">
-      <div class="game-content">
-        <div class="game-controls">
-          <button onclick="exitGame()">Return</button>
-          <button onclick="toggleFullscreen()">Fullscreen</button>
-        </div>
-        <iframe id="gameIframe" src="" allow="fullscreen"></iframe>
-      </div>
-    </div>
+.game-controls {
+position: absolute;
+top: 10px;
+left: 10px;
+display: flex;
+gap: 10px;
+}
 
-    <script>
-      let currentGameId = null;
+button {
+background-color: #4CAF50;
+color: white;
+padding: 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
 
-      function playGame(gameId, gameUrl) {
-        const gameContainer = document.getElementById('gameContainer');
-        const gameIframe = document.getElementById('gameIframe');
-        gameIframe.src = gameUrl;
-        currentGameId = gameId;
-        gameContainer.style.display = 'flex';
-      }
+button:hover {
+background-color: #45a049;
+}
 
-      function exitGame() {
-        const gameContainer = document.getElementById('gameContainer');
-        const gameIframe = document.getElementById('gameIframe');
-        gameIframe.src = '';
-        gameContainer.style.display = 'none';
-      }
+iframe {
+width: 100%;
+height: 100%;
+border: none;
+border-radius: 15px;
+}
 
-      function toggleFullscreen() {
-        const gameIframe = document.getElementById('gameIframe');
-        
-        if (gameIframe.requestFullscreen) {
-          gameIframe.requestFullscreen();
-        } else if (gameIframe.mozRequestFullScreen) {
-          gameIframe.mozRequestFullScreen();
-        } else if (gameIframe.webkitRequestFullscreen) {
-          gameIframe.webkitRequestFullscreen();
-        } else if (gameIframe.msRequestFullscreen) {
-          gameIframe.msRequestFullscreen();
-        }
-      }
-    </script>
-  </body>
+.hidden {
+display: none;
+}
+</style>
+</head>
+<body>
+<main class="container">
+<div class="section" id="game1">
+<img src="https://play-lh.googleusercontent.com/xbB3QLgeuMh5clpSpMLRAPJ80WV77jifWu1iz-quwQwN7kp5WCzvrLiM-Up6au20OTI" alt="Getaway Shootout">
+<p>Getaway Shootout</p>
+<button onclick="playGame('game1', 'https://ubg44.github.io/GetawayShootout/')">Play</button>
+</div>
+<div class="section" id="game2">
+<img src="https://fngames.io/data/image/game/slope-unblocked-1.jpg" alt="Slope">
+<p>Slope</p>
+<button onclick="playGame('game2', 'https://azgames.io/game/slope/')">Play</button>
+</div>
+<div class="section" id="game3">
+<img src="https://play-lh.googleusercontent.com/fLqvWSVq5rENEvu32xl0hf96wwSHVwQm-_9xc6KZg9Vgv9PbAtf1CyBYW7i1mlAXoSA" alt="Gunspin">
+<p>Gunspin</p>
+<button onclick="playGame('game3', 'https://gun-spin.github.io/file/')">Play</button>
+</div>
+</main>
+
+<div class="game-container" id="gameContainer">
+<div class="game-content">
+<div class="game-controls">
+<button onclick="exitGame()">Return</button>
+<button onclick="toggleFullscreen()">Fullscreen</button>
+</div>
+<iframe id="gameIframe" src="" allow="fullscreen"></iframe>
+</div>
+</div>
+
+<script>
+let currentGameId = null;
+
+function playGame(gameId, gameUrl) {
+const gameContainer = document.getElementById('gameContainer');
+const gameIframe = document.getElementById('gameIframe');
+gameIframe.src = gameUrl;
+currentGameId = gameId;
+gameContainer.style.display = 'flex';
+}
+
+function exitGame() {
+const gameContainer = document.getElementById('gameContainer');
+const gameIframe = document.getElementById('gameIframe');
+gameIframe.src = '';
+gameContainer.style.display = 'none';
+}
+
+function toggleFullscreen() {
+const gameIframe = document.getElementById('gameIframe');
+
+if (gameIframe.requestFullscreen) {
+gameIframe.requestFullscreen();
+} else if (gameIframe.mozRequestFullScreen) {
+gameIframe.mozRequestFullScreen();
+} else if (gameIframe.webkitRequestFullscreen) {
+gameIframe.webkitRequestFullscreen();
+} else if (gameIframe.msRequestFullscreen) {
+gameIframe.msRequestFullscreen();
+}
+}
+</script>
+</body>
 </html>
