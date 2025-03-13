@@ -4,78 +4,218 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <link rel="stylesheet" href="pico.min.css">
-  <title></title>
+  <link rel="stylesheet" href="pico.indigo.min.css">
+  <title>Game System</title>
+  <style>
+    @font-face {
+      font-family: 'Coolvetica';
+      src: url('Coolvetica.otf') format('opentype');
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      font-family: "Coolvetica", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+    }
+
+    header {
+      padding: 20px;
+      width: 100%;
+      background-color: #2f2f2f;
+      text-align: center;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 1280px;
+      overflow-y: auto;
+      height: 80vh;
+      justify-items: center;
+      margin-top: 20px;
+      flex-grow: 1;
+      position: relative;
+    }
+
+    .section {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 15px;
+      background-color: #fff;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .section img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px 15px 0 0;
+    }
+
+    .section p {
+      font-size: 18px;
+      padding: 10px;
+      font-weight: bold;
+    }
+
+    .section button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .section button:hover {
+      background-color: #45a049;
+    }
+
+    .section:hover {
+      transform: scale(1.05);
+    }
+
+    .game-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .game-content {
+      position: relative;
+      width: 80%;
+      height: 80%;
+    }
+
+    .game-controls {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 15px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <main class="game-container">
-    <div id="gameList" class="game-list"></div>
+  <header>
+    <h1>Game System</h1>
+    <input type="text" id="gameSearch" placeholder="Search games..." oninput="filterGames()">
+  </header>
+
+  <main id="gameGrid">
   </main>
 
-  <div class="game-overlay" id="gameOverlay">
+  <div class="game-container" id="gameContainer">
     <div class="game-content">
       <div class="game-controls">
-        <button class="exit-btn" onclick="exitGame()">Exit</button>
-        <button class="fullscreen-btn" onclick="toggleFullscreen()">Fullscreen</button>
+        <button onclick="exitGame()">Return</button>
+        <button onclick="toggleFullscreen()">Fullscreen</button>
       </div>
       <iframe id="gameIframe" src="" allow="fullscreen"></iframe>
     </div>
   </div>
 
   <script>
-    let currentGameId = null;
-
     const games = [
       {
         id: 'game1',
-        name: 'Getaway Shootout',
+        title: 'Getaway Shootout',
         image: 'https://play-lh.googleusercontent.com/xbB3QLgeuMh5clpSpMLRAPJ80WV77jifWu1iz-quwQwN7kp5WCzvrLiM-Up6au20OTI',
         url: 'https://ubg44.github.io/GetawayShootout/'
       },
       {
         id: 'game2',
-        name: 'Slope',
+        title: 'Slope',
         image: 'https://fngames.io/data/image/game/slope-unblocked-1.jpg',
         url: 'https://azgames.io/game/slope/'
       },
       {
         id: 'game3',
-        name: 'Gunspin',
+        title: 'Gunspin',
         image: 'https://play-lh.googleusercontent.com/fLqvWSVq5rENEvu32xl0hf96wwSHVwQm-_9xc6KZg9Vgv9PbAtf1CyBYW7i1mlAXoSA',
         url: 'https://gun-spin.github.io/file/'
       }
     ];
 
-    function renderGames() {
-      const gameList = document.getElementById('gameList');
-      gameList.innerHTML = '';
-      games.forEach(game => {
-        const gameCard = document.createElement('div');
-        gameCard.classList.add('game-card');
-        gameCard.innerHTML = `
-          <img src="${game.image}" alt="${game.name}" class="game-img">
-          <div class="game-info">
-            <h3>${game.name}</h3>
-            <button class="play-btn" onclick="playGame('${game.id}', '${game.url}')">Play</button>
-          </div>
-        `;
-        gameList.appendChild(gameCard);
-      });
+    let currentGameId = null;
+
+    function addGameToUI(game) {
+      const gameGrid = document.getElementById('gameGrid');
+      const gameElement = document.createElement('div');
+      gameElement.classList.add('section');
+      gameElement.id = game.id;
+      gameElement.innerHTML = `
+        <img src="${game.image}" alt="${game.title}">
+        <p>${game.title}</p>
+        <button onclick="playGame('${game.id}', '${game.url}')">Play</button>
+      `;
+      gameGrid.appendChild(gameElement);
     }
 
     function playGame(gameId, gameUrl) {
-      const gameOverlay = document.getElementById('gameOverlay');
+      const gameContainer = document.getElementById('gameContainer');
       const gameIframe = document.getElementById('gameIframe');
       gameIframe.src = gameUrl;
       currentGameId = gameId;
-      gameOverlay.style.display = 'flex';
+      gameContainer.style.display = 'flex';
     }
 
     function exitGame() {
-      const gameOverlay = document.getElementById('gameOverlay');
+      const gameContainer = document.getElementById('gameContainer');
       const gameIframe = document.getElementById('gameIframe');
       gameIframe.src = '';
-      gameOverlay.style.display = 'none';
+      gameContainer.style.display = 'none';
     }
 
     function toggleFullscreen() {
@@ -91,7 +231,20 @@
       }
     }
 
-    renderGames();
+    function filterGames() {
+      const query = document.getElementById('gameSearch').value.toLowerCase();
+      const sections = document.querySelectorAll('.section');
+      sections.forEach((section) => {
+        const title = section.querySelector('p').textContent.toLowerCase();
+        if (title.includes(query)) {
+          section.style.display = 'block';
+        } else {
+          section.style.display = 'none';
+        }
+      });
+    }
+
+    games.forEach(addGameToUI);
   </script>
 </body>
 </html>
