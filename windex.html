@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <link rel="stylesheet" href="pico.indigo.min.css">
-  <title>math</title>
+  <title>Game System</title>
   <style>
     @font-face {
       font-family: 'Coolvetica';
@@ -52,7 +52,7 @@
     .section img {
       width: 100%;
       height: 100%;
-      object-fit: fill;
+      object-fit: cover;
       border-radius: 25%;
     }
 
@@ -102,10 +102,6 @@
       border: none;
       border-radius: 15px;
     }
-
-    .hidden {
-      display: none;
-    }
   </style>
 </head>
 <body>
@@ -121,21 +117,9 @@
   </div>
 </div>
 
-<div id="addGameForm">
-  <h2>Add Custom Game</h2>
-  <form onsubmit="addGame(event)">
-    <label for="gameName">Game Name:</label>
-    <input type="text" id="gameName" required><br><br>
-    <label for="gameImage">Game Image URL:</label>
-    <input type="url" id="gameImage" required><br><br>
-    <label for="gameUrl">Game URL:</label>
-    <input type="url" id="gameUrl" required><br><br>
-    <button type="submit">Add Game</button>
-  </form>
-</div>
-
 <script>
   let currentGameId = null;
+
   const games = [
     {
       id: 'game1',
@@ -159,7 +143,7 @@
 
   function renderGames() {
     const gameList = document.getElementById('gameList');
-    gameList.innerHTML = '';
+    gameList.innerHTML = ''; 
     games.forEach(game => {
       const gameSection = document.createElement('div');
       gameSection.classList.add('section');
@@ -191,7 +175,6 @@
 
   function toggleFullscreen() {
     const gameIframe = document.getElementById('gameIframe');
-
     if (gameIframe.requestFullscreen) {
       gameIframe.requestFullscreen();
     } else if (gameIframe.mozRequestFullScreen) {
@@ -201,24 +184,6 @@
     } else if (gameIframe.msRequestFullscreen) {
       gameIframe.msRequestFullscreen();
     }
-  }
-
-  function addGame(event) {
-    event.preventDefault();
-    const gameName = document.getElementById('gameName').value;
-    const gameImage = document.getElementById('gameImage').value;
-    const gameUrl = document.getElementById('gameUrl').value;
-
-    const newGame = {
-      id: `game${games.length + 1}`,
-      name: gameName,
-      image: gameImage,
-      url: gameUrl
-    };
-    
-    games.push(newGame);
-    renderGames();
-    document.getElementById('addGameForm').reset();
   }
 
   function removeGame(gameId) {
