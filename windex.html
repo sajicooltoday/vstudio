@@ -6,196 +6,92 @@
   <meta name="color-scheme" content="light dark">
   <link rel="stylesheet" href="pico.indigo.min.css">
   <title></title>
-  <style>
-    @font-face {
-      font-family: 'Coolvetica';
-      src: url('Coolvetica.otf') format('opentype');
-    }
-
-    p {
-      padding-top: 30px;
-      font-family: "Coolvetica";
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #121212;
-    }
-
-    main {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(512px, 1fr));
-      grid-gap: 20px;
-      padding: 20px;
-      width: 80%;
-      max-width: 1280px;
-      overflow-y: auto;
-      height: 80vh;
-      justify-items: center;
-    }
-
-    .section {
-      width: 512px;
-      height: 512px;
-      border-radius: 25%;
-      text-align: center;
-      background-color: #fff;
-      padding: 10px;
-      border: 1px solid #ccc;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .section img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 25%;
-    }
-
-    .game-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .game-content {
-      position: relative;
-      width: 80%;
-      height: 80%;
-    }
-
-    .game-controls {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      display: flex;
-      gap: 10px;
-    }
-
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #45a049;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 15px;
-    }
-  </style>
 </head>
 <body>
-<main class="container" id="gameList"></main>
+  <main class="game-container">
+    <div id="gameList" class="game-list"></div>
+  </main>
 
-<div class="game-container" id="gameContainer">
-  <div class="game-content">
-    <div class="game-controls">
-      <button onclick="exitGame()">Return</button>
-      <button onclick="toggleFullscreen()">Fullscreen</button>
+  <div class="game-overlay" id="gameOverlay">
+    <div class="game-content">
+      <div class="game-controls">
+        <button class="exit-btn" onclick="exitGame()">Exit</button>
+        <button class="fullscreen-btn" onclick="toggleFullscreen()">Fullscreen</button>
+      </div>
+      <iframe id="gameIframe" src="" allow="fullscreen"></iframe>
     </div>
-    <iframe id="gameIframe" src="" allow="fullscreen"></iframe>
   </div>
-</div>
 
-<script>
-  let currentGameId = null;
+  <script>
+    let currentGameId = null;
 
-  const games = [
-    {
-      id: 'game1',
-      name: 'Getaway Shootout',
-      image: 'https://play-lh.googleusercontent.com/xbB3QLgeuMh5clpSpMLRAPJ80WV77jifWu1iz-quwQwN7kp5WCzvrLiM-Up6au20OTI',
-      url: 'https://ubg44.github.io/GetawayShootout/'
-    },
-    {
-      id: 'game2',
-      name: 'Slope',
-      image: 'https://fngames.io/data/image/game/slope-unblocked-1.jpg',
-      url: 'https://azgames.io/game/slope/'
-    },
-    {
-      id: 'game3',
-      name: 'Gunspin',
-      image: 'https://play-lh.googleusercontent.com/fLqvWSVq5rENEvu32xl0hf96wwSHVwQm-_9xc6KZg9Vgv9PbAtf1CyBYW7i1mlAXoSA',
-      url: 'https://gun-spin.github.io/file/'
+    const games = [
+      {
+        id: 'game1',
+        name: 'Getaway Shootout',
+        image: 'https://play-lh.googleusercontent.com/xbB3QLgeuMh5clpSpMLRAPJ80WV77jifWu1iz-quwQwN7kp5WCzvrLiM-Up6au20OTI',
+        url: 'https://ubg44.github.io/GetawayShootout/'
+      },
+      {
+        id: 'game2',
+        name: 'Slope',
+        image: 'https://fngames.io/data/image/game/slope-unblocked-1.jpg',
+        url: 'https://azgames.io/game/slope/'
+      },
+      {
+        id: 'game3',
+        name: 'Gunspin',
+        image: 'https://play-lh.googleusercontent.com/fLqvWSVq5rENEvu32xl0hf96wwSHVwQm-_9xc6KZg9Vgv9PbAtf1CyBYW7i1mlAXoSA',
+        url: 'https://gun-spin.github.io/file/'
+      }
+    ];
+
+    function renderGames() {
+      const gameList = document.getElementById('gameList');
+      gameList.innerHTML = '';
+      games.forEach(game => {
+        const gameCard = document.createElement('div');
+        gameCard.classList.add('game-card');
+        gameCard.innerHTML = `
+          <img src="${game.image}" alt="${game.name}" class="game-img">
+          <div class="game-info">
+            <h3>${game.name}</h3>
+            <button class="play-btn" onclick="playGame('${game.id}', '${game.url}')">Play</button>
+          </div>
+        `;
+        gameList.appendChild(gameCard);
+      });
     }
-  ];
 
-  function renderGames() {
-    const gameList = document.getElementById('gameList');
-    gameList.innerHTML = ''; 
-    games.forEach(game => {
-      const gameSection = document.createElement('div');
-      gameSection.classList.add('section');
-      gameSection.id = game.id;
-      gameSection.innerHTML = `
-        <img src="${game.image}" alt="${game.name}">
-        <p>${game.name}</p>
-        <button onclick="playGame('${game.id}', '${game.url}')">Play</button>
-        <button onclick="removeGame('${game.id}')">Remove</button>
-      `;
-      gameList.appendChild(gameSection);
-    });
-  }
-
-  function playGame(gameId, gameUrl) {
-    const gameContainer = document.getElementById('gameContainer');
-    const gameIframe = document.getElementById('gameIframe');
-    gameIframe.src = gameUrl;
-    currentGameId = gameId;
-    gameContainer.style.display = 'flex';
-  }
-
-  function exitGame() {
-    const gameContainer = document.getElementById('gameContainer');
-    const gameIframe = document.getElementById('gameIframe');
-    gameIframe.src = '';
-    gameContainer.style.display = 'none';
-  }
-
-  function toggleFullscreen() {
-    const gameIframe = document.getElementById('gameIframe');
-    if (gameIframe.requestFullscreen) {
-      gameIframe.requestFullscreen();
-    } else if (gameIframe.mozRequestFullScreen) {
-      gameIframe.mozRequestFullScreen();
-    } else if (gameIframe.webkitRequestFullscreen) {
-      gameIframe.webkitRequestFullscreen();
-    } else if (gameIframe.msRequestFullscreen) {
-      gameIframe.msRequestFullscreen();
+    function playGame(gameId, gameUrl) {
+      const gameOverlay = document.getElementById('gameOverlay');
+      const gameIframe = document.getElementById('gameIframe');
+      gameIframe.src = gameUrl;
+      currentGameId = gameId;
+      gameOverlay.style.display = 'flex';
     }
-  }
 
-  function removeGame(gameId) {
-    const gameIndex = games.findIndex(game => game.id === gameId);
-    if (gameIndex > -1) {
-      games.splice(gameIndex, 1);
-      renderGames();
+    function exitGame() {
+      const gameOverlay = document.getElementById('gameOverlay');
+      const gameIframe = document.getElementById('gameIframe');
+      gameIframe.src = '';
+      gameOverlay.style.display = 'none';
     }
-  }
 
-  renderGames();
-</script>
+    function toggleFullscreen() {
+      const gameIframe = document.getElementById('gameIframe');
+      if (gameIframe.requestFullscreen) {
+        gameIframe.requestFullscreen();
+      } else if (gameIframe.mozRequestFullScreen) {
+        gameIframe.mozRequestFullScreen();
+      } else if (gameIframe.webkitRequestFullscreen) {
+        gameIframe.webkitRequestFullscreen();
+      } else if (gameIframe.msRequestFullscreen) {
+        gameIframe.msRequestFullscreen();
+      }
+    }
 
+    renderGames();
+  </script>
 </body>
 </html>
