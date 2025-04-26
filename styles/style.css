@@ -36,3 +36,21 @@ button:hover {
 button:active {
     background-color: transparent;
 }
+
+.imgbtn {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+}
+  
+.imgbtn img {
+    max-width: 60%;
+    max-height: 100%;
+    display: block;
+}
