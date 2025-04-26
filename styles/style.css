@@ -54,3 +54,15 @@ button:active {
     max-height: 100%;
     display: block;
 }
+
+.settingsbox {
+    width: 500px;
+    height: 300px;
+    padding: 0px;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(27, 27, 27);
+    border-radius: 10px;
+    border: 1px solid #333;
+    margin: 250px auto;
+}
