@@ -103,11 +103,11 @@
         return;
       }
       if (!/^\d+$/.test(input)) {
-        resultDiv.innerHTML = "<span class='error'>Error: Discord ID must be numeric.</span>";
+        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
         return;
       }
       if (input.length < 10) {
-        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID length.</span>";
+        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
         return;
       }
 
