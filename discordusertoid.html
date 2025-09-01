@@ -93,33 +93,37 @@
     <div class="result" id="result">Result will appear here...</div>
   </div>
 
-  <script>
-    async function lookup() {
-      const input = document.getElementById("discordId").value.trim();
-      const resultDiv = document.getElementById("result");
+<script>
+  async function lookup() {
+    const input = document.getElementById("discordId").value.trim();
+    const resultDiv = document.getElementById("result");
 
-      if (!input) {
-        resultDiv.innerHTML = "<span class='error'>Error: Discord ID cannot be empty.</span>";
-        return;
-      }
-      if (!/^\d+$/.test(input)) {
-        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
-        return;
-      }
-      if (input.length < 10) {
-        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
-        return;
-      }
-
-      resultDiv.textContent = "Looking up...";
-      try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        const data = await res.json();
-        resultDiv.textContent = `IP Address: ${data.ip}`;
-      } catch (err) {
-        resultDiv.innerHTML = "<span class='error'>Error: Unable to fetch IP.</span>";
-      }
+    if (!input) {
+      resultDiv.innerHTML = "<span class='error'>Error: Discord ID cannot be empty.</span>";
+      return;
     }
-  </script>
+    if (!/^\d+$/.test(input)) {
+      resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
+      return;
+    }
+    if (input.length < 10) {
+      resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
+      return;
+    }
+
+    resultDiv.textContent = "Looking up...";
+
+    try {
+      const res = await fetch("https://api.ipify.org?format=json");
+      const data = await res.json();
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      resultDiv.textContent = `IP Address: ${data.ip}`;
+    } catch (err) {
+      resultDiv.innerHTML = "<span class='error'>Error: Unable to fetch IP.</span>";
+    }
+  }
+</script>
 </body>
 </html>
