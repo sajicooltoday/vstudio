@@ -83,6 +83,22 @@
     .error {
       color: #ff6b6b;
     }
+    .user-info {
+      margin-top: 1rem;
+      text-align: left;
+      color: #fff;
+    }
+    .user-info img {
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .user-info .banner {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -93,37 +109,46 @@
     <div class="result" id="result">Result will appear here...</div>
   </div>
 
-<script>
-  async function lookup() {
-    const input = document.getElementById("discordId").value.trim();
-    const resultDiv = document.getElementById("result");
+  <script>
+    async function lookup() {
+      const input = document.getElementById("discordId").value.trim();
+      const resultDiv = document.getElementById("result");
 
-    if (!input) {
-      resultDiv.innerHTML = "<span class='error'>Error: Discord ID cannot be empty.</span>";
-      return;
+      if (!input) {
+        resultDiv.innerHTML = "<span class='error'>Error: Discord ID cannot be empty.</span>";
+        return;
+      }
+      if (!/^\d+$/.test(input)) {
+        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
+        return;
+      }
+      if (input.length < 10) {
+        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
+        return;
+      }
+
+      resultDiv.textContent = "Looking up...";
+
+      try {
+        const userRes = await fetch(`https://discordlookup.mesalytic.moe/v1/user/${input}`);
+        if (!userRes.ok) {
+          throw new Error("User not found");
+        }
+        const userData = await userRes.json();
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        resultDiv.innerHTML = `
+          <div class="user-info">
+            <strong>Username:</strong> ${userData.tag}<br>
+            <strong>Avatar:</strong> <img src="${userData.avatar.link}" alt="Avatar" width="100"><br>
+            <strong>Banner:</strong> <img src="${userData.banner.link}" alt="Banner" class="banner"><br>
+          </div>
+        `;
+      } catch (err) {
+        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
+      }
     }
-    if (!/^\d+$/.test(input)) {
-      resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
-      return;
-    }
-    if (input.length < 10) {
-      resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID.</span>";
-      return;
-    }
-
-    resultDiv.textContent = "Looking up...";
-
-    try {
-      const res = await fetch("https://api.ipify.org?format=json");
-      const data = await res.json();
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      resultDiv.textContent = `IP Address: ${data.ip}`;
-    } catch (err) {
-      resultDiv.innerHTML = "<span class='error'>Error: Unable to fetch IP.</span>";
-    }
-  }
-</script>
+  </script>
 </body>
 </html>
