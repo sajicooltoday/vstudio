@@ -80,26 +80,44 @@
       justify-content: center;
       border: 1px solid rgba(255,255,255,0.05);
     }
+    .error {
+      color: #ff6b6b;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>Discord ID → IP Lookup</h1>
-    <input type="text" placeholder="Enter Discord ID">
+    <input type="text" id="discordId" placeholder="Enter Discord ID">
     <button onclick="lookup()">Lookup</button>
     <div class="result" id="result">Result will appear here...</div>
   </div>
 
   <script>
     async function lookup() {
+      const input = document.getElementById("discordId").value.trim();
       const resultDiv = document.getElementById("result");
+
+      if (!input) {
+        resultDiv.innerHTML = "<span class='error'>Error: Discord ID cannot be empty.</span>";
+        return;
+      }
+      if (!/^\d+$/.test(input)) {
+        resultDiv.innerHTML = "<span class='error'>Error: Discord ID must be numeric.</span>";
+        return;
+      }
+      if (input.length < 10) {
+        resultDiv.innerHTML = "<span class='error'>Error: Invalid Discord ID length.</span>";
+        return;
+      }
+
       resultDiv.textContent = "Looking up...";
       try {
         const res = await fetch("https://api.ipify.org?format=json");
         const data = await res.json();
         resultDiv.textContent = `IP Address: ${data.ip}`;
       } catch (err) {
-        resultDiv.textContent = "Error fetching IP.";
+        resultDiv.innerHTML = "<span class='error'>Error: Unable to fetch IP.</span>";
       }
     }
   </script>
